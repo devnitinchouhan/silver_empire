@@ -21,6 +21,37 @@ from django.conf.urls.static import static
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from django.http import JsonResponse
+from django.db import connection
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def health_check(request):
+    """Health check endpoint for Docker and monitoring"""
+    try:
+        # Check database connectivity
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+        
+        return JsonResponse({
+            'status': 'healthy',
+            'database': 'connected',
+            'service': 'silver-empire-api'
+        }, status=200)
+    
+    except Exception as e:
+        logger.error(f"Health check failed: {str(e)}")
+        return JsonResponse({
+            'status': 'unhealthy',
+            'database': 'disconnected',
+            'service': 'silver-empire-api',
+            'error': str(e)
+        }, status=503)
 
 
 @api_view(['GET'])
@@ -62,6 +93,7 @@ def api_root(request):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("health/", health_check, name="health_check"),
     path("api/", api_root, name="api_root"),
     path("api/auth/", include("customers.urls")),
     path("api/categories/", include("categories.urls")),
