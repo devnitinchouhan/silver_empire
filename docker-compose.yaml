@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   backend:
     build: .
@@ -31,13 +29,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    networks:
-      - silver_network
 
 volumes:
   static_volume:
   media_volume:
-
-networks:
-  silver_network:
-    driver: bridge
