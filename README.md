@@ -92,6 +92,21 @@ The application automatically creates these categories on startup:
 - `POST /api/auth/register/` - Register
 - `POST /api/auth/refresh/` - Refresh token
 
+Notes on token usage:
+- This project uses JWT tokens for API authentication (via `rest_framework_simplejwt`).
+- To call protected endpoints (like `/api/orders/`), include the access token in the Authorization header:
+
+Example:
+
+```bash
+# Get access token from /api/auth/login/ (returns `tokens.access`)
+# Then call orders endpoint with the token
+curl -H "Authorization: Bearer <ACCESS_TOKEN>" \
+   -H "Content-Type: application/json" \
+   -d '{"items":[{"product":1,"quantity":1}], "shipping_cost":"20.00"}' \
+   http://127.0.0.1:8000/api/orders/
+```
+
 ### Categories
 - `GET /api/categories/` - List categories
 - `POST /api/categories/` - Create category
@@ -105,6 +120,16 @@ The application automatically creates these categories on startup:
 - `GET /api/products/{id}/` - Get product details
 - `PUT /api/products/{id}/` - Update product
 - `DELETE /api/products/{id}/` - Delete product
+
+### Orders
+
+- `GET /api/orders/` - List orders (authenticated)
+- `POST /api/orders/` - Create an order (authenticated). Payload includes `customer`, `items` (list of product, variation, quantity, unit_price).
+- `GET /api/orders/{id}/` - Get order details. Responses include `order_id` which is the human-friendly id prefixed with "ORD" (e.g. "ORD12").
+  
+Notes:
+- `GET /api/orders/` returns only orders belonging to the authenticated user making the request. Staff and superusers can list all orders.
+- Order creation ignores any `customer` field in the payload and uses the authenticated user from the request token.
 
 ## Development
 

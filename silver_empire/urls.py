@@ -87,6 +87,12 @@ def api_root(request):
                 'related': '/api/products/{id}/related/',
                 'variation_detail': '/api/products/variations/{id}/',
             }
+            ,
+            'orders': {
+                'list': '/api/orders/',
+                'create': '/api/orders/',
+                'detail': '/api/orders/{id}/',
+            }
         }
     })
 
@@ -98,6 +104,7 @@ urlpatterns = [
     path("api/auth/", include("customers.urls")),
     path("api/categories/", include("categories.urls")),
     path("api/products/", include("products.urls")),
+    path("api/orders/", include("orders.urls")),
 ]
 
 # Serve media files in development
