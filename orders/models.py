@@ -19,8 +19,10 @@ class Order(models.Model):
     status = models.CharField(max_length=30, default='pending')
     # Shipping details
     shipping_address = models.CharField(max_length=500, blank=True, null=True)
+    shipping_address = models.CharField(max_length=500, blank=True, null=True)
     shipping_city = models.CharField(max_length=200, blank=True, null=True)
-    shipping_postal_code = models.CharField(max_length=20, blank=True, null=True)
+    shipping_state = models.CharField(max_length=200, blank=True, null=True)
+    shipping_zip_code = models.CharField(max_length=20, blank=True, null=True)
     shipping_country = models.CharField(max_length=100, blank=True, null=True)
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
